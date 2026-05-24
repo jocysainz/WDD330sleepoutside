@@ -1,3 +1,6 @@
+// pull the api url out of the .env file
+const baseURL = import.meta.env.VITE_SERVER_URL;
+
 function convertToJson(res) {
   if (res.ok) {
     return res.json();
@@ -7,17 +10,21 @@ function convertToJson(res) {
 }
 
 export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `../json/${this.category}.json`;
+  constructor() {
+    // no longer storing category here - it gets passed into getData instead
   }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+
+  async getData(category) {
+    const response = await fetch(`${baseURL}products/search/${category}`);
+    const data = await convertToJson(response);
+    // the api wraps everything in a result property
+    return data.Result;
   }
+
   async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    // just hit the api directly for one product by id
+    const response = await fetch(`${baseURL}product/${id}`);
+    const data = await convertToJson(response);
+    return data.Result;
   }
 }
