@@ -1,0 +1,33 @@
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+
+export default class ProductDetails {
+  constructor(productId, dataSource) {
+    this.productId = productId;
+    this.product = {};
+    this.dataSource = dataSource;
+  }
+
+  async init() {
+    this.product = await this.dataSource.findProductById(this.productId);
+    this.renderProductDetails();
+    document.getElementById("addToCart")
+      .addEventListener("click", this.addProductToCart.bind(this));
+  }
+
+  addProductToCart() {
+    const cart = getLocalStorage("so-cart") || [];
+    cart.push(this.product);
+    setLocalStorage("so-cart", cart);
+  }
+
+  renderProductDetails() {
+    document.querySelector(".product__brand").textContent = this.product.Brand.Name;
+    document.querySelector(".product__name").textContent = this.product.NameWithoutBrand;
+    document.querySelector(".product__image").src = this.product.Image;
+    document.querySelector(".product__image").alt = this.product.NameWithoutBrand;
+    document.querySelector(".product__price").textContent = `$${this.product.FinalPrice}`;
+    document.querySelector(".product__color").textContent = this.product.Colors[0].ColorName;
+    document.querySelector(".product__description").innerHTML = this.product.DescriptionHtmlSimple;
+    document.querySelector("#addToCart").dataset.id = this.product.Id;
+  }
+}
