@@ -28,4 +28,16 @@ function cartItemTemplate(item) {
   return newItem;
 }
 
+// --- calculate the cart total ---
+function calculateCartTotal() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const totalElement = document.getElementById("cart-total-amount");
+  
+  if (cartItems.length > 0 && totalElement) {
+    const total = cartItems.reduce((sum, item) => sum + item.FinalPrice, 0);
+    totalElement.innerText = total.toFixed(2);
+  }
+}
+
 renderCartContents();
+calculateCartTotal();
