@@ -18,6 +18,18 @@ export default class ProductDetails {
     const cart = getLocalStorage("so-cart") || [];
     cart.push(this.product);
     setLocalStorage("so-cart", cart);
+
+    // --- NEW ANIMATION CODE ---
+    // 1. Find the backpack SVG icon
+    const cartIcon = document.querySelector(".cart svg");
+    
+    // 2. Add the animation class to make it bounce
+    cartIcon.classList.add("cart-bump");
+    
+    // 3. Remove the class after half a second so it can bounce again next time
+    setTimeout(() => {
+        cartIcon.classList.remove("cart-bump");
+    }, 500);
   }
 
   renderProductDetails() {
